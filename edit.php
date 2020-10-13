@@ -19,13 +19,20 @@ if(isset($_POST['update'])){
   
   // Get Values:
   $name = $_POST['name'];
+  $uname = $_POST['uname'];
   $email = $_POST['email'];
+  $mobile = $_POST['mobile'];
   $password = $_POST['password'];
 
   if(isset($_POST['gender'])){
 
     $gender = $_POST['gender'];
   }
+  if(isset($_POST['location'])){
+
+    $location = $_POST['location'];
+  }
+ 
   
   
   // Files Upload:
@@ -39,13 +46,13 @@ if(isset($_POST['update'])){
 
 
   // Form Validation:
-  if( empty($name) || empty($email) || empty($password) || empty($gender) ){
+  if( empty($name) || empty($uname) || empty($email) || empty($password) || empty($gender) ){
 
     $notice = validation_notice('Fill the Required Fields !', 'danger');
 
   }else{
 
-    $sql = "UPDATE users SET name='$name', email='$email', password='$password', gender='$gender', photo='$unique_new_file_name' WHERE id='$edit_id' ";
+    $sql = "UPDATE users SET name='$name', uname='$uname', email='$email', mobile='$mobile', password='$password', gender='$gender', location='$location' photo='$unique_new_file_name' WHERE id='$edit_id' ";
 
     $connection -> query($sql);
 
@@ -102,13 +109,28 @@ if(isset($_POST['update'])){
         </div>
 
         <div class="form-group">
+          <label>Username</label>
+          <input type="text" class="form-control" name="uname" value="<?php echo $edit_data['uname']; ?>">
+        </div>
+
+        <div class="form-group">
           <label>E-mail</label>
           <input type="email" class="form-control" name="email" value="<?php echo $edit_data['email']; ?>">
         </div>
 
         <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" class="form-control" name="mobile" value="<?php echo $edit_data['mobile']; ?>">
+        </div>
+
+        <div class="form-group">
           <label>Password</label>
           <input type="password" class="form-control" name="password">
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" class="form-control" name="cpassword">
         </div>
 
         <div class="form-group">
@@ -123,6 +145,31 @@ if(isset($_POST['update'])){
             </label>
         </div>
 
+
+        <div class="form-group">
+          <label>Location</label>
+          <select class="form-control" name="location">
+            <option value="">-Select-</option>
+            <option <?php if($edit_data['location'] == 'Dhaka'){echo 'selected';} ?> value="Dhaka">Dhaka</option>
+
+            <option <?php if($edit_data['location'] == 'Chittagong'){echo 'selected';} ?> value="Chittagong">Chittagong</option>
+
+            <option <?php if($edit_data['location'] == 'Barishal'){echo 'selected';} ?> value="Barishal">Barishal</option>
+
+            <option <?php if($edit_data['location'] == 'Khulna'){echo 'selected';} ?> value="Khulna">Khulna</option>
+
+            <option <?php if($edit_data['location'] == 'Mymensingh'){echo 'selected';} ?> value="Mymensingh">Mymensingh</option>
+
+            <option <?php if($edit_data['location'] == 'Rajshahi'){echo 'selected';} ?> value="Rajshahi">Rajshahi</option>
+
+            <option <?php if($edit_data['location'] == 'Rangpur'){echo 'selected';} ?> value="Rangpur">Rangpur</option>
+
+            <option <?php if($edit_data['location'] == 'Sylhet'){echo 'selected';} ?> value="Sylhet">Sylhet</option>
+          </select>
+        </div>
+
+
+        
         <div class="form-group">
           <img style="width: 150px;" src="photos/<?php echo $edit_data['photo']; ?>">
           <input <?php echo $edit_data['photo']; ?> type="hidden" class="form-control-file" name="old_file">

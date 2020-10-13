@@ -6,33 +6,91 @@ if(isset($_POST['submit'])){
   
   // Get Values:
   $name = $_POST['name'];
+  $uname = $_POST['uname'];
   $email = $_POST['email'];
+  $mobile = $_POST['mobile'];
   $password = $_POST['password'];
+  $cpassword = $_POST['cpassword'];
 
   if(isset($_POST['gender'])){
 
     $gender = $_POST['gender'];
   }
-  
-  
+  if(isset($_POST['location'])){
+
+    $location = $_POST['location'];
+  }
+
+
+  $terms = 'disagree';
+  if (isset($_POST['terms'])) {
+    
+    $terms = $_POST['terms'];
+  }
+
   // Files Upload:
   $file_name = $_FILES['file']['name'];
   $file_tmp_name = $_FILES['file']['tmp_name'];
 
-  $unique_file_name = md5( time() . rand() . $file_name ); 
+  $unique_file_name = md5( time() . rand() . $file_name );
+
+
+
+  // Hash Password:
+  $hash_pass = password_hash($password, PASSWORD_DEFAULT);
+
+
+  // E-mail Check:
+  $email_check = val_check('users', 'email', $email);
+
+
+  // Username Check:
+  $uname_check = val_check('users', 'uname', $uname);
+
+
+  // Mobile Check:
+  $mobile_check = val_check('users', 'mobile', $mobile);
+
+
+
+ 
 
  
 
 
 
   // Form Validation:
-  if( empty($name) || empty($email) || empty($password) || empty($gender) ){
+  if( empty($name) || empty($uname) || empty($email) || empty($password) || empty($gender) ){
 
     $notice = validation_notice('Fill the Required Fields !', 'danger');
 
+  }elseif( $terms == 'disagree' ){
+
+    $notice = validation_notice('You should agree !', 'warning');
+
+  }elseif( $password != $cpassword ){
+
+    $notice = validation_notice('Password not matched !', 'danger');
+
+  }elseif($uname_check > 0){
+
+    $notice = validation_notice('Username Already exists !', 'warning');
+
+  }elseif( !filter_var($email, FILTER_VALIDATE_EMAIL) ){
+
+    $notice = validation_notice('Invalid E-mail Address !', 'danger');
+
+  }elseif($email_check > 0){
+
+    $notice = validation_notice('E-mail Already exists !', 'warning');
+
+  }elseif($mobile_check > 0){
+
+    $notice = validation_notice('Mobile number Already exists', 'warning');
+
   }else{
 
-    $sql = "INSERT INTO users (name, email, password, gender, photo) VALUES ('$name', '$email', '$password', '$gender', '$unique_file_name') ";
+    $sql = "INSERT INTO users (name, uname, email, mobile, password, gender, location, photo) VALUES ('$name', '$uname', '$email', '$mobile', '$hash_pass', '$gender', 'location', '$unique_file_name') ";
 
     $connection -> query($sql);
 
@@ -98,13 +156,28 @@ if(isset($_POST['submit'])){
         </div>
 
         <div class="form-group">
+          <label>Username</label>
+          <input type="text" class="form-control" name="uname">
+        </div>
+
+        <div class="form-group">
           <label>E-mail</label>
-          <input type="email" class="form-control" name="email">
+          <input type="text" class="form-control" name="email">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" class="form-control" name="mobile">
         </div>
 
         <div class="form-group">
           <label>Password</label>
           <input type="password" class="form-control" name="password">
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" class="form-control" name="cpassword">
         </div>
 
         <div class="form-group">
@@ -119,10 +192,38 @@ if(isset($_POST['submit'])){
             </label>
         </div>
 
+       <div class="form-group">
+          <label>Location</label>
+          <select class="form-control" name="location">
+            <option value="">-Select-</option>
+            <option value="Dhaka">Dhaka</option>
+
+            <option value="Chittagong">Chittagong</option>
+
+            <option value="Barishal">Barishal</option>
+
+            <option>Khulna</option>
+
+            <option value="Mymensingh">Mymensingh</option>
+
+            <option value="Rajshahi">Rajshahi</option>
+
+            <option value="Rangpur">Rangpur</option>
+
+            <option value="Sylhet">Sylhet</option>
+          </select>
+        </div>
 
         <div class="form-group">
           <input type="file" class="form-control-file" name="file">
         </div>
+
+        <div class="form-group">
+          <input type="checkbox" name="terms">
+          <label>Yes, I agree</label>
+        </div>
+
+
 
         <button type="submit" class="btn btn-primary" name="submit">Submit</button>
       </form>
