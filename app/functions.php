@@ -6,4 +6,15 @@
   }
 
 
+  // Value Check:
+  function val_check($tbl, $col, $val){
+  	global $connection;
+
+  	$sql = "SELECT $col FROM $tbl WHERE $col ='$val' ";
+  	$val_check = $connection -> query($sql);
+
+  	return $val_check -> num_rows;
+  }
+
+
 ?>
